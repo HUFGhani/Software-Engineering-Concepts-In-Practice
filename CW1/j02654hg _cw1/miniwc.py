@@ -6,7 +6,7 @@ import sys
 def read_file(file_name):
     data = None
     try:
-        f = open(file_name, "r")
+        f = open(file_name, "r", -1, 'utf-8')
         data = f.read()
         f.close()
     except FileNotFoundError:
@@ -34,7 +34,7 @@ def character_count(file_name):
 def byte_count(file_name):
     byte = 0
     if len(file_name) > 0:
-        byte = len(file_name.encode('utf-8')) + 1
+        byte = len(file_name.encode('utf-8'))
     return byte
 
 
