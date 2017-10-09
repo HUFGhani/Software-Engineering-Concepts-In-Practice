@@ -12,6 +12,9 @@ def main(arg):
         if argument == "-":
             print("wc: -: open: No such file or directory")
             sys.exit(0)
+        elif argument == "--version" or argument == "--help":
+            print("wc: illegal option -- -\n usage: wc [-clmw] [file ...]")
+            sys.exit(0)
         else:
             if argument == "-l" or argument == "l" or argument == "-w" or argument == "w" or argument == "-c" \
                     or argument == "c":
@@ -26,6 +29,7 @@ def main(arg):
                 file_found = False
             if file_found.__eq__(True):
                 break
+
     flag = list(temp_flag)
     for i in temp_arg:
         arguments.remove(i)
@@ -47,7 +51,7 @@ def arguments_split(arguments, file_name, total_files_size):
     total_word = 0
     total_byte = 0
     arg = arguments
-    if arg.__contains__(""):
+    if arg.__contains__("") or len(arg) == 0:
         arg = ["l", "w", "c"]
     for file in file_name:
         if read_file(file) is not None:
@@ -89,13 +93,13 @@ def arguments_split(arguments, file_name, total_files_size):
 
 
 def str_builder(line_temp, word_temp, byte_temp, file_name):
-    return str(line_temp) + str(word_temp) + str(byte_temp) + " " + str(file_name) + "\n"
+    return str(line_temp) + str(word_temp) + str(byte_temp) + " " + str(file_name)
 
 
 def read_file(file_name):
     data = None
     try:
-        f = open(file_name, "r", 1, 'utf-8')
+        f = open(file_name, "r", 1, 'ascii')
         data = f.read()
         f.close()
     except FileNotFoundError:
@@ -106,21 +110,21 @@ def read_file(file_name):
     return data
 
 
-def count_words(file_name):
-    return len(file_name.split(None))
+def count_words(file_data):
+    return len(file_data.split(None))
 
 
-def count_lines(file_name):
-    return len(file_name.split("\n"))
+def count_lines(file_data):
+    return len(file_data.split("\n"))
 
 
-def character_count(file_name):
-    return sum(len(word) for word in file_name)
+def character_count(file_data):
+    return sum(len(word) for word in file_data)
 
 
-def byte_count(file_name):
-    if len(file_name) > 0:
-        byte = len(file_name.encode('ascii'))
+def byte_count(file_data):
+    if len(file_data) > 0:
+        byte = len(file_data.encode('ascii'))
     return byte
 
 
