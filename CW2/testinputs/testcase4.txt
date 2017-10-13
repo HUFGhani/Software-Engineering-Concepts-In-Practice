@@ -1,0 +1,7 @@
+A test oracle is (typically) a program that gives you the desired expected outcome for a test input. Being a program, obviously a test oracle could have bugs and thus give us faulty tests, so oracles typically must be handled with care and suspicion.
+
+In this case, the oracle's behaviour just is the correct behaviour, because we?re trying to exactly reimplement the oracle?s behaviour.
+
+In other cases, we might have implemented a much simpler version of the program we want to test which is more likely to be correct, but lacks other useful features (such as high performance, robustness, or some features).
+
+The extreme version of this is to have a set of programs, all independently implemented, and use majority agreement on output to be the oracle. This is known as N-version programming.

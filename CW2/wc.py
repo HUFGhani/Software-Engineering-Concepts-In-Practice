@@ -59,18 +59,18 @@ def arguments_split(arguments, file_name, total_files_size):
             for i in arg:
                 if i == "l" or i == "-l":
                     line = count_lines(temp_data)
-                    if line > 0:
-                        line_temp = "       " + str(line)
+                    if line > -1:
+                        line_temp = "\t" + str(line)
                         total_line += line
                 elif i == "w" or i == "-w":
                     word = count_words(temp_data)
-                    if word > 0:
-                        word_temp = "       " + str(word)
+                    if word > -1:
+                        word_temp = "\t" + str(word)
                         total_word += word
                 elif i == "c" or i == "-c":
                     byte = byte_count(temp_data)
-                    if byte > 0:
-                        byte_temp = "       " + str(byte)
+                    if byte > -1:
+                        byte_temp = "\t" + str(byte)
                         total_byte += byte
                 else:
                     print("wc: illegal option -- " + str(arg) + "\n" + "usage: wc [-clmw] [file ...]")
@@ -79,15 +79,21 @@ def arguments_split(arguments, file_name, total_files_size):
             output.append("wc: " + file + " open: No such file or directory")
             break
         count += 1
+
+        if byte_temp.__eq__(0) and word.__eq__(0):
+            line_temp = "\t" + str(0)
+            total_line = total_line - line
+            total_line += 0
+
         output.append(str_builder(line_temp, word_temp, byte_temp, file))
     if total_files_size >= 2:
         temp = ""
-        if line > 0:
-            temp += "       " + str(total_line)
-        if word > 0:
-            temp += "       " + str(total_word)
-        if byte > 0:
-            temp += "       " + str(total_byte)
+        if line > -1:
+            temp += "\t" + str(total_line)
+        if word > -1:
+            temp += "\t" + str(total_word)
+        if byte > -1:
+            temp += "\t" + str(total_byte)
         output.append(temp + " total")
     return output
 
@@ -99,7 +105,7 @@ def str_builder(line_temp, word_temp, byte_temp, file_name):
 def read_file(file_name):
     data = None
     try:
-        f = open(file_name, "r", 1, 'ascii')
+        f = open(file_name, "r", 1, 'utf-8')
         data = f.read()
         f.close()
     except FileNotFoundError:
@@ -115,7 +121,7 @@ def count_words(file_data):
 
 
 def count_lines(file_data):
-    return len(file_data.split("\n"))
+    return len(file_data.split("\n")) - 1
 
 
 def character_count(file_data):
@@ -123,8 +129,12 @@ def character_count(file_data):
 
 
 def byte_count(file_data):
+    byte = 0
     if len(file_data) > 0:
-        byte = len(file_data.encode('ascii'))
+        try:
+            byte = len(file_data.encode('ascii'))
+        except:
+            byte = len(file_data.encode('utf-8'))
     return byte
 
 
