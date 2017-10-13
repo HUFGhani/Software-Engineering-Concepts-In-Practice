@@ -111,6 +111,7 @@ def character_count(file_data):
     return sum(len(word) for word in file_data)
 
 
+
 def byte_count(file_data):
     byte = 0
     if len(file_data) > 0:
