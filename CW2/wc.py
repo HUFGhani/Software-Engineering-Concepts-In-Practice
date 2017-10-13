@@ -3,37 +3,17 @@
 import sys
 import argparse
 
-def main(arg):
-    arguments = list(map(str, arg))
-    temp_flag = ""
-    temp_arg = list()
-    for argument in arguments:
-        file_found = True
-        if argument == "-":
-            print("wc: -: open: No such file or directory")
-            sys.exit(0)
-        elif argument == "--version" or argument == "--help":
-            print("wc: illegal option -- -\n usage: wc [-clmw] [file ...]")
-            sys.exit(0)
-        else:
-            if argument == "-l" or argument == "l" or argument == "-w" or argument == "w" or argument == "-c" \
-                    or argument == "c":
-                temp_flag += argument.replace("-", "")
-                temp_flag.replace(" ", "")
-                temp_arg.append(argument)
-                file_found = False
-            elif len(argument) == 3 or len(argument) == 4:
-                temp_flag += argument.replace("-", "")
-                temp_flag.replace(" ", "")
-                temp_arg.append(argument)
-                file_found = False
-            if file_found.__eq__(True):
-                break
 
-    flag = list(temp_flag)
-    for i in temp_arg:
-        arguments.remove(i)
-    output = list(arguments_split(flag, arguments, len(arguments)))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', action='store_true')
+    parser.add_argument('-l', action='store_true')
+    parser.add_argument('-c', action='store_true')
+    parser.add_argument("filename", nargs='*')
+    args = parser.parse_args()
+
+    output = arguments_split(args, args.filename, len(args.filename))
+
     for i in output:
         print(i)
 
@@ -51,30 +31,33 @@ def arguments_split(arguments, file_name, total_files_size):
     total_word = 0
     total_byte = 0
     arg = arguments
-    if arg.__contains__("") or len(arg) == 0:
-        arg = ["l", "w", "c"]
+
+    if arg.c == False and arg.w == False and arg.l == False:
+        arg.c = True
+        arg.w = True
+        arg.l = True
+
     for file in file_name:
         if read_file(file) is not None:
             temp_data = read_file(file)
-            for i in arg:
-                if i == "l" or i == "-l":
-                    line = count_lines(temp_data)
-                    if line > -1:
-                        line_temp = "\t" + str(line)
-                        total_line += line
-                elif i == "w" or i == "-w":
-                    word = count_words(temp_data)
-                    if word > -1:
-                        word_temp = "\t" + str(word)
-                        total_word += word
-                elif i == "c" or i == "-c":
-                    byte = byte_count(temp_data)
-                    if byte > -1:
-                        byte_temp = "\t" + str(byte)
-                        total_byte += byte
-                else:
-                    print("wc: illegal option -- " + str(arg) + "\n" + "usage: wc [-clmw] [file ...]")
-                    sys.exit(0)
+
+            if arg.l:
+                line = count_lines(temp_data)
+                line_temp = "\t" + str(line)
+                total_line += line
+
+            if arg.w:
+                word = count_words(temp_data)
+                word_temp = "\t" + str(word)
+                total_word += word
+
+            if arg.c:
+                byte = byte_count(temp_data)
+                byte_temp = "\t" + str(byte)
+                total_byte += byte
+            elif arg.c:
+                print("wc: illegal option -- " + str(arg) + "\n" + "usage: wc [-clmw] [file ...]")
+                sys.exit(0)
         else:
             output.append("wc: " + file + " open: No such file or directory")
             break
@@ -109,7 +92,7 @@ def read_file(file_name):
         data = f.read()
         f.close()
     except FileNotFoundError:
-        if data is None and file_name == "l" or file_name == "w" or file_name == "c":
+        if data is None and file_name == "-l" or file_name == "-w" or file_name == "-c":
             print("wc: " + file_name + " open: No such file or directory")
         else:
             data = None
@@ -139,4 +122,4 @@ def byte_count(file_data):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
